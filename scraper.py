@@ -117,6 +117,12 @@ def scrape_country(country_url):
         print dep_rel_url, department_id
         department_url = urljoin(country_url, dep_rel_url)
         results += scrape_department(department_url, department_id)
+    # Wallis et Futuna has a separate link for some reason:
+    dep_rel_url = './986/986.html'
+    department_id = '986'
+    print dep_rel_url, department_id
+    results += scrape_department(
+        urljoin(country_url, dep_rel_url), department_id)
     return results
 
 data = scrape_country('http://elections.interieur.gouv.fr/legislatives-2017/')
