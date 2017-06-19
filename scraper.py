@@ -8,6 +8,7 @@ import re
 from urlparse import urljoin
 
 import scraperwiki
+import sqlite3
 import lxml.html
 
 
@@ -120,6 +121,10 @@ def scrape_country(country_url):
 
 data = scrape_country('http://elections.interieur.gouv.fr/legislatives-2017/')
 
+try:
+    scraperwiki.sqlite.execute('DELETE FROM data')
+except sqlite3.OperationalError:
+    pass
 scraperwiki.sqlite.save(
     unique_keys=['area_id', 'Liste des candidats', 'Nuances', 'Tour'],
     data=data)
