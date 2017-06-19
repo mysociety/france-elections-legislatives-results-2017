@@ -112,7 +112,7 @@ def scrape_country(country_url):
         dep_rel_url = option.get('value')
         if dep_rel_url == '#':
             continue
-        department_id = re.search('^(\d+)', dep_rel_url).group(1)
+        department_id = re.search('^(\d+[A-Z]*)', dep_rel_url).group(1)
         print dep_rel_url, department_id
         department_url = urljoin(country_url, dep_rel_url)
         results += scrape_department(department_url, department_id)
