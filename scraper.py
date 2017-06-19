@@ -76,10 +76,24 @@ def scrape_department(department_url, department_id):
     results = []
     department_html = scraperwiki.scrape(department_url)
     root = lxml.html.fromstring(department_html)
-    titles = root.xpath(u"//*[contains(text(), 'Circonscriptions législatives du département')]")
-    assert len(titles) == 1
-    index_div = titles[0].getparent()
-    for a in index_div.cssselect('a'):
+    title_with_arrondissements = root.xpath(
+        u"//*[contains(text(), 'Résultats par circonscriptions et arrondissements')]")
+    title = root.xpath(
+        u"//*[contains(text(), 'Circonscriptions législatives du département')]")
+    if len(title_with_arrondissements) > 0:
+        # Then this is a case like Paris where the links are in the
+        # first column of the following table.
+        assert len(title_with_arrondissements) == 1
+        table = title_with_arrondissements[0].getnext()
+        a_elements = [
+            row.cssselect('td')[0].cssselect('a')[0]
+            for row in table.cssselect('tr')[1:]
+            if len(row) > 1
+        ]
+    else:
+        assert len(title) == 1
+        a_elements = title[0].getparent().cssselect('a')
+    for a in a_elements:
         link_text = tidy_element_text(a)
         cir_number = re.search(r'^(\d+)', link_text).group(1)
         cir_rel_url = a.get('href')
