@@ -27,6 +27,11 @@ def parse_table(table, department_id, cir_number, tour):
         d['dep_id'] = department_id
         d['cir_number'] = cir_number
         d['Tour'] = tour
+        d['gender'] = ''
+        if d['Liste des candidats'].find('M. ') == 0:
+            d['gender'] = 'M'
+        elif d['Liste des candidats'].find('Mme ') == 0:
+            d['gender'] = 'F'
         results.append(d)
     return results
 
