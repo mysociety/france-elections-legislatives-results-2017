@@ -17,6 +17,11 @@ def tidy_element_text(element):
     return re.sub(r'\s+', ' ', s.strip())
 
 
+def fix_name(messy_name):
+    name = re.sub('^Mme \.', 'Mme', messy_name)
+    return re.sub('MARIE SARA', 'Marie SARA', name)
+
+
 def parse_table(table, department_id, cir_number, tour):
     rows = table.cssselect('tr')
     fields = [tidy_element_text(th) for th in rows[0].cssselect('th')]
@@ -27,6 +32,7 @@ def parse_table(table, department_id, cir_number, tour):
         d['dep_id'] = department_id
         d['cir_number'] = cir_number
         d['Tour'] = tour
+        d['Liste des candidats'] = fix_name(d['Liste des candidats'])
         d['gender'] = ''
         if d['Liste des candidats'].find('M. ') == 0:
             d['gender'] = 'M'
